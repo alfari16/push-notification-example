@@ -1,0 +1,8 @@
+{
+  "name": "Ingat Sholat",
+  "short_name": "Ingat Sholat",
+  "display": "standalone",
+  "background_color": "#ea0f00",
+  "theme_color": "#ea0f00",
+  "gcm_sender_id": "1038127839342"
+}

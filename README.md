@@ -1,10 +1,10 @@
-# prayer-app
+# Push Notification Example
 
-> A Vue.js project
+> An Example to build an application that support push notification
 
 ## Build Setup
 
-``` bash
+```bash
 # install dependencies
 npm install
 

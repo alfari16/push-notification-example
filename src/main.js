@@ -2,7 +2,7 @@ import Vue from 'vue'
 import App from './App'
 
 import registerServiceWorker from './registerServiceWorker'
-registerServiceWorker()
+if (!location.href.includes('localhost')) registerServiceWorker()
 
 Vue.config.productionTip = false
 

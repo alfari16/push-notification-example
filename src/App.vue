@@ -20,15 +20,12 @@
       </div>
       <p class="jadwal text-center">JADWAL SHOLAT HARI INI</p>
       <div class="row text-center">
-        <div
-          class="col-md-6"
-          v-for="(list,key,idx) in prayer"
-          :key="list['date-for']"
-          v-if="idx!==0"
-        >
-          <p class="label">{{key}}</p>
-          <p class="konten time">{{list}}</p>
-        </div>
+        <template v-for="(list,key,idx) in prayer">
+          <div class="col-md-6" v-if="idx!==0" :key="list['date-for']">
+            <p class="label">{{key}}</p>
+            <p class="konten time">{{list}}</p>
+          </div>
+        </template>
       </div>
     </template>
     <div class="spacer"></div>
@@ -211,10 +208,24 @@ export default {
       setTimeout(() => {
         location.reload()
       }, 5000)
+    },
+    async getCity() {
+      try {
+        const {
+          data: { geoplugin_city }
+        } = await axios.get('http://www.geoplugin.net/json.gp')
+        // console.log('city', geoplugin_city)
+        this.city = geoplugin_city
+      } catch (error) {
+        this.city = 'jakarta'
+        console.error(error)
+        alert('City not found')
+      }
+      this.getTime(this.city)
     }
   },
   created() {
-    this.getLongLang()
+    this.getCity()
   },
   filters: {
     time(val) {

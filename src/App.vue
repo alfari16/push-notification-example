@@ -1,16 +1,14 @@
 <template>
   <div class="root flex-wrap">
     <nav class="text-center flex-wrap">
-			<img :src="icon" alt="Icon Ingat Sholat" class="icon">
-			INGAT SHOLAT
-		</nav>
+      <img :src="icon" alt="Icon Ingat Sholat" class="icon">
+      INGAT SHOLAT
+    </nav>
     <p v-if="loading===true" class="flex-wrap text-center loading">Loading...</p>
     <p v-else-if="loading!==true && loading !==false" class="flex-wrap text-center loading">
-			{{errorMsg}}. 
-			<template v-if="loading!=='denied'">
-				Refreshing {{counter}}...
-			</template>
-		</p>
+      {{errorMsg}}.
+      <template v-if="loading!=='denied'">Refreshing {{counter}}...</template>
+    </p>
     <template v-else>
       <div class="header">
         <p class="label">Lokasi</p>
@@ -22,7 +20,12 @@
       </div>
       <p class="jadwal text-center">JADWAL SHOLAT HARI INI</p>
       <div class="row text-center">
-        <div class="col-md-6" v-for="(list,key,idx) in prayer" :key="list['date-for']" v-if="idx!==0">
+        <div
+          class="col-md-6"
+          v-for="(list,key,idx) in prayer"
+          :key="list['date-for']"
+          v-if="idx!==0"
+        >
           <p class="label">{{key}}</p>
           <p class="konten time">{{list}}</p>
         </div>
@@ -46,9 +49,9 @@ export default {
       navigatorReady: false,
       allow: false,
       loading: true,
-			counter: 5,
+      counter: 5,
       icon,
-      city:null
+      city: null
     }
   },
   computed: {
@@ -66,17 +69,17 @@ export default {
       const waktu = [
         'date',
         'shubuh',
-        "shuruq",
+        'shuruq',
         'dzuhur',
         'ashar',
         'maghrib',
-        "isya"
+        'isya'
       ]
       Object.keys(this.data.items[0]).forEach((el, idx) => {
         obj[waktu[idx]] = this.data.items[0][el]
       })
       return obj
-    },
+    }
   },
   methods: {
     async register() {
@@ -91,20 +94,25 @@ export default {
       console.log('auth', (data.auth = pushReg.keys.auth))
       data.endpoint = pushReg.endpoint
       data.location = this.city
-      axios.post('https://ingat-sholat.herokuapp.com/store', {
-        ...this.prayer,
-        ...data
-      }, {
-        headers:{
-          'Authorization': 'Bearer hello-prayer-app'
-        }
-      })
-      .then(res => {
-        console.log(res)
-        this.navigatorReady=false
-        alert('Berhasil mengaktifkan push notifikasi!')
-      })
-      .catch(res => console.log(res))
+      axios
+        .post(
+          'https://ingat-sholat.herokuapp.com/store',
+          {
+            ...this.prayer,
+            ...data
+          },
+          {
+            headers: {
+              Authorization: 'Bearer hello-prayer-app'
+            }
+          }
+        )
+        .then(res => {
+          console.log(res)
+          this.navigatorReady = false
+          alert('Berhasil mengaktifkan push notifikasi!')
+        })
+        .catch(res => console.log(res))
     },
     displayLocation(latitude, longitude) {
       axios
@@ -115,29 +123,29 @@ export default {
             longitude +
             '&sensor=true'
         )
-          .then(async res => {
-            let found = true
-            let city = res.data.results[0].address_components.find(el =>
-              /(?:kabupaten|kota)/gi.test(el.long_name)
-            ).long_name
-            console.log(city)
-            if (city) {
-              this.city = city = city
-                .replace(/(?:kabupaten|kota)/gi, '')
-                .trim()
-                .toLowerCase()
-            } else {
-              found = false
-              city = 'jakarta'
-            }
-            this.getTime(city)
-          })
-          .catch(err => {
-            console.log(err)
-            setTimeout(() => {
-              location.reload()
-            }, 3000);
-          })
+        .then(async res => {
+          let found = true
+          let city = res.data.results[0].address_components.find(el =>
+            /(?:kabupaten|kota)/gi.test(el.long_name)
+          ).long_name
+          console.log(city)
+          if (city) {
+            this.city = city = city
+              .replace(/(?:kabupaten|kota)/gi, '')
+              .trim()
+              .toLowerCase()
+          } else {
+            found = false
+            city = 'jakarta'
+          }
+          this.getTime(city)
+        })
+        .catch(err => {
+          console.log(err)
+          setTimeout(() => {
+            location.reload()
+          }, 3000)
+        })
     },
     getLongLang() {
       const vm = this
@@ -182,19 +190,19 @@ export default {
       )
     },
     getTime(city) {
-			console.log('TRIGGERRED')
+      console.log('TRIGGERRED')
       axios
         .post('https://ingat-sholat.herokuapp.com/', { city })
         .then(res => {
-          console.log(res.data);
-					this.data = res.data
-					this.loading=false
+          console.log(res.data)
+          this.data = res.data
+          this.loading = false
         })
         .catch(res => {
-					console.log(res)
-					this.errorMsg = res
-					this.loading='error'
-				})
+          console.log(res)
+          this.errorMsg = res
+          this.loading = 'error'
+        })
     },
     startCounting() {
       setInterval(() => {
@@ -203,8 +211,8 @@ export default {
       setTimeout(() => {
         location.reload()
       }, 5000)
-    },
-	},
+    }
+  },
   created() {
     this.getLongLang()
   },
@@ -213,18 +221,18 @@ export default {
       return moment(val, 'YYYY-MM-DD').format('DD MMM YYYY')
     }
   },
-  watch:{
-    data(val){
-      if(val) {
-        navigator.serviceWorker.ready
-        .then(reg => {
+  watch: {
+    data(val) {
+      if (val) {
+        navigator.serviceWorker.ready.then(reg => {
           this.navigatorReady = true
-          if(reg.active.state === 'activated'){
-            if(window.Notification.permission === 'granted') this.register()
+          if (reg.active.state === 'activated') {
+            if (window.Notification.permission === 'granted') this.register()
           } else {
             reg.active.onstatechange = () => {
-              if(reg.active.state === 'activated'){
-                if(window.Notification.permission === 'granted') this.register()
+              if (reg.active.state === 'activated') {
+                if (window.Notification.permission === 'granted')
+                  this.register()
               }
             }
           }

@@ -9,8 +9,7 @@
     "start": "npm run dev",
     "lint": "eslint --ext .js,.vue src",
     "build": "node build/build.js",
-    "postbuild": "cp ./static/manifest.json ./dist/",
-    "prebuild": "rm -r dist"
+    "postbuild": "cp ./static/manifest.json ./dist/"
   },
   "dependencies": {
     "axios": "^0.18.0",

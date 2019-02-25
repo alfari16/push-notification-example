@@ -212,12 +212,10 @@ export default {
     async getCity() {
       try {
         const {
-          data: { city, region }
-        } = await axios.get(
-          'https://api.ipdata.co/?api-key=0525a3622af50a8bfb8c165e949ee8f231c6c13ffcc8385aab0ed0e3'
-        )
+          data: { region }
+        } = await axios.get('https://json.geoiplookup.io/')
         // console.log('city', geoplugin_city)
-        this.city = (city || region).toLowerCase()
+        this.city = region.toLowerCase()
       } catch (error) {
         this.city = 'jakarta'
         console.error(error)
